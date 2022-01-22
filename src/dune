@@ -1,0 +1,3 @@
+(library
+ (name wordlebot)
+ (public_name Wordlebot))

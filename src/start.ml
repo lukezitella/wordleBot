@@ -1,0 +1,1 @@
+print_endline "guess the word"
