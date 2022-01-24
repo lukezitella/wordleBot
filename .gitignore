@@ -13,3 +13,4 @@ _build
 *~
 \#*\#
 .DS_Store
+src/hello
