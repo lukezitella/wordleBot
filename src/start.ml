@@ -45,17 +45,3 @@ let determine word =
       done
     in
     if !is then Good word else Bad
-
-let rec start hello =
-  let _ = print_endline "enter your guess" in
-  let word = read_line () in
-  let word = String.lowercase_ascii word in
-  match determine word with
-  | Bad ->
-      let _ = print_endline "invalid word, try again" in
-      start "h"
-  | Good _ -> print_endline ("nice" ^ hello)
-
-let () =
-  let () = print_endline "game starting" in
-  start "bro"
