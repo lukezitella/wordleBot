@@ -39,22 +39,34 @@ let rec start correct tries letters =
   let _ = print_endline "enter your guess" in
   let _ = print_possible letters in
   let word = read_line () in
-  let word = String.lowercase_ascii word in
-  match Start.determine word with
-  | Bad ->
-      let _ = print_endline "invalid word, try again" in
-      start "hello" (tries + 1) letters
-  | Good x ->
-      if x = correct then
-        print_endline
-          ("you win! word was " ^ correct ^ ". You guessed it in "
-         ^ string_of_int tries ^ " tries!")
-      else
-        let _ = print_endline "try again" in
-        let _ = print_each (Start.get_output correct x 4 []) in
-        let letters = Start.modify_letters correct x letters 0 in
-        start correct (tries + 1) letters
+  if word = "bot" then Bot.solve correct 1 Data.data
+  else
+    let word = String.lowercase_ascii word in
+    match Start.determine word with
+    | Bad ->
+        let _ = print_endline "invalid word, try again" in
+        start "hello" (tries + 1) letters
+    | Good x ->
+        if x = correct then
+          print_endline
+            ("you win! word was " ^ correct ^ ". You guessed it in "
+           ^ string_of_int tries ^ " tries!")
+        else
+          let _ = print_endline "try again" in
+          let _ = print_each (Start.get_output correct x 4 []) in
+          let letters = Start.modify_letters correct x letters 0 in
+          start correct (tries + 1) letters
 
 let () =
-  let () = print_endline "game starting" in
-  start "hello" 1 [ row1; row2; row3 ]
+  let _ =
+    print_endline
+      "enter random for a random word, or enter a word to use"
+  in
+  let word = read_line () in
+  match Start.determine word with
+  | Bad ->
+      let () = print_endline "game starting" in
+      start "hello" 1 [ row1; row2; row3 ]
+  | Good word ->
+      let () = print_endline "game starting" in
+      start word 1 [ row1; row2; row3 ]
