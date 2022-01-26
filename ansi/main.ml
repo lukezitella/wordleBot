@@ -2,45 +2,59 @@ open Wordlebot
 
 let letters = Start.letters
 
+let row1 = [ 'q'; 'w'; 'e'; 'r'; 't'; 'y'; 'u'; 'i'; 'o'; 'p' ]
+
+let row2 = [ 'a'; 's'; 'd'; 'f'; 'g'; 'h'; 'j'; 'k'; 'l' ]
+
+let row3 = [ 'z'; 'x'; 'c'; 'v'; 'b'; 'n'; 'm' ]
+
 let rec print_possible_helper possibles template acc =
   match template with
   | h :: t ->
       if List.mem h possibles then
         print_possible_helper possibles t (acc ^ String.make 1 h ^ " ")
-      else print_possible_helper possibles t (acc ^ "  ")
+      else print_possible_helper possibles t (acc ^ "# ")
   | [] -> acc ^ "]"
 
-let rec print_possible set =
+let print_possible set =
   let () =
-    print_endline
-      (print_possible_helper (List.nth set 0)
-         [ 'q'; 'w'; 'e'; 'r'; 't'; 'y'; 'u'; 'i'; 'o'; 'p' ]
-         "[")
+    print_endline (print_possible_helper (List.nth set 0) row1 "[")
   in
   let () =
-    print_endline
-      (print_possible_helper (List.nth set 0)
-         [ 'a'; 's'; 'd'; 'f'; 'g'; 'h'; 'j'; 'k'; 'l' ]
-         "[")
+    print_endline (print_possible_helper (List.nth set 1) row2 "[")
   in
   let () =
-    print_endline
-      (print_possible_helper (List.nth set 0)
-         [ 'z'; 'x'; 'c'; 'v'; 'b'; 'n'; 'm' ]
-         "[")
+    print_endline (print_possible_helper (List.nth set 2) row3 "[")
   in
   ()
 
-let rec start hello =
+let rec print_each lst =
+  match lst with
+  | h :: t ->
+      let _ = print_endline h in
+      print_each t
+  | [] -> ()
+
+let rec start correct tries letters =
   let _ = print_endline "enter your guess" in
+  let _ = print_possible letters in
   let word = read_line () in
   let word = String.lowercase_ascii word in
   match Start.determine word with
   | Bad ->
       let _ = print_endline "invalid word, try again" in
-      start "h"
-  | Good _ -> print_endline ("nice" ^ hello)
+      start "hello" (tries + 1) letters
+  | Good x ->
+      if x = correct then
+        print_endline
+          ("you win! word was " ^ correct ^ ". You guessed it in "
+         ^ string_of_int tries ^ " tries!")
+      else
+        let _ = print_endline "try again" in
+        let _ = print_each (Start.get_output correct x 4 []) in
+        let letters = Start.modify_letters correct x letters 0 in
+        start correct (tries + 1) letters
 
 let () =
   let () = print_endline "game starting" in
-  start "bro"
+  start "hello" 1 [ row1; row2; row3 ]
