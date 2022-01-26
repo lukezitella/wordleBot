@@ -66,7 +66,9 @@ let () =
   match Start.determine word with
   | Bad ->
       let () = print_endline "game starting" in
-      start "hello" 1 [ row1; row2; row3 ]
+      start
+        (List.nth Data.data (Random.int 5756))
+        1 [ row1; row2; row3 ]
   | Good word ->
       let () = print_endline "game starting" in
       start word 1 [ row1; row2; row3 ]
