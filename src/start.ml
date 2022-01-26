@@ -46,7 +46,9 @@ let rec get_output correct word place acc =
       else
         get_output correct word (place - 1)
           (("You guessed " ^ String.make 1 current
-          ^ " correctly at the wrong place,  " ^ string_of_int place)
+          ^ " correctly at the wrong place,  "
+           ^ string_of_int (place + 1)
+           ^ " is incorrect")
           :: acc)
     else
       get_output correct word (place - 1)
@@ -56,10 +58,7 @@ let rec remove_list letter list =
   match list with
   | [] -> []
   | h :: t ->
-      if Char.equal letter h then
-        let _ = print_endline ("here, " ^ String.make 1 letter) in
-        t
-      else h :: remove_list letter t
+      if Char.equal letter h then t else h :: remove_list letter t
 
 let remove_letter letter letters =
   match letters with
@@ -74,9 +73,8 @@ let rec modify_letters correct word letters place =
   if place = 5 then letters
   else
     let current = String.get word place in
-    let _ = print_endline (String.make 1 current) in
+
     if String.contains correct current = false then
-      let _ = print_endline "here" in
       modify_letters correct word
         (remove_letter current letters)
         (place + 1)
