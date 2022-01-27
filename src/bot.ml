@@ -28,11 +28,12 @@ let rec info_correct correct guess place =
   else
     let current = String.get guess place in
     let right = String.get correct place in
+
     if String.contains correct current then
-      if current = right then
-        (current, place) :: info_correct correct guess (place + 1)
-      else (current, -1) :: info_correct correct guess (place + 1)
-    else []
+      if Char.equal current right then
+        (current, place, -1) :: info_correct correct guess (place + 1)
+      else (current, -1, place) :: info_correct correct guess (place + 1)
+    else info_correct correct guess (place + 1)
 
 let rec info_false correct guess place =
   if place = 5 then []
@@ -45,9 +46,12 @@ let rec info_false correct guess place =
 let rec correct corrects word =
   match corrects with
   | [] -> true
-  | (chara, num) :: t ->
+  | (chara, num, poss) :: t ->
       if String.contains word chara = false then false
-      else if num = -1 then correct t word
+      else if num = -1 then
+        let atHere = String.get word poss in
+
+        if Char.equal atHere chara then false else correct t word
       else if Char.equal (String.get word num) chara then correct t word
       else false
 
@@ -66,7 +70,9 @@ let rec eliminate guess data corrects falses =
   match data with
   | [] -> []
   | h :: t ->
-      if correct corrects h && not_false falses h then
+      if correct corrects h = false then
+        eliminate guess t corrects falses
+      else if not_false falses h then
         h :: eliminate guess t corrects falses
       else eliminate guess t corrects falses
 
