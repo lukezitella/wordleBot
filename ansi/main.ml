@@ -65,10 +65,23 @@ let () =
   let word = read_line () in
   match Start.determine word with
   | Bad ->
-      let () = print_endline "game starting" in
-      start
-        (List.nth Data.data (Random.int 5756))
-        1 [ row1; row2; row3 ]
+      if word = "test" then
+        let data = Data.data in
+        let x = ref 0 in
+        let _ =
+          for i = 0 to 5756 do
+            x := !x + Bot.solve_test (List.nth data i) 0 data
+          done
+        in
+        print_endline
+          ("average of "
+          ^ string_of_float (Float.div (float_of_int !x) 5757.)
+          ^ " attempts per word")
+      else
+        let () = print_endline "game starting" in
+        start
+          (List.nth Data.data (Random.int 5756))
+          1 [ row1; row2; row3 ]
   | Good word ->
       let () = print_endline "game starting" in
       start word 1 [ row1; row2; row3 ]

@@ -3,3 +3,5 @@ val solve : string -> int -> string list -> unit
     guess for the correct word based on what word shares the most
     letters with other words in the dataset, which is modified to
     contain only possible words. *)
+
+val solve_test : string -> int -> string list -> int

@@ -99,3 +99,22 @@ let rec solve correct tries data =
       print_endline (string_of_int (List.length data) ^ " words left")
     in
     solve correct (tries + 1) data
+
+let rec solve_test correct tries data =
+  let guess = find_common data data (0, "adieu") in
+  if guess = correct then
+    let _ =
+      print_endline
+        ("the word is " ^ correct ^ "!!! Finished in "
+       ^ string_of_int tries ^ " tries!!!")
+    in
+    tries
+  else
+    let data =
+      eliminate guess data
+        (info_correct correct guess 0)
+        (info_false correct guess 0)
+    in
+    let data = remove_last_guess data guess in
+
+    solve_test correct (tries + 1) data
